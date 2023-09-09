@@ -23,9 +23,9 @@ const VideoDetails = () => {
     VideoDetails(id, searchResults);
   }, [id, searchResults]);
   function getcomment(id) {
-    const stored = JSON.parse(localStorage.getItem(id));
+    const stored = JSON.parse(localStorage.getItem(`${id}`));
     setdata(stored);
-    if(stored.like){
+    if(stored.like!==null){
       setlike(stored.like);
     }
     setcomment("");
@@ -42,13 +42,13 @@ const VideoDetails = () => {
   };
   function handersubmit(e) {
     e.preventDefault();
-    localStorage.setItem(id, JSON.stringify({like:(data&&data.like)?data.like:0,comments:(data&&data.comments)?[...data.comments,comment]:[comment]}));
+    localStorage.setItem(`${id}`, JSON.stringify({like:(data&&data.like)?data.like:0,comments:(data&&data.comments)?[...data.comments,comment]:[comment]}));
     getcomment(id);
   }
   const handlelike = () => {
     setliked(true);
     setlike(like+1)
-    localStorage.setItem(id, JSON.stringify({like:(data&&data.like)?(+data.like)+1:1,comments:(data&&data.comments)?data.comments:null}));
+    localStorage.setItem(`${id}`, JSON.stringify({like:(data&&data.like)?(+data.like)+1:1,comments:(data&&data.comments)?data.comments:null}));
 
     setTimeout(() => {
       setliked(false);
@@ -56,14 +56,13 @@ const VideoDetails = () => {
   };
   const handleDislike = () => {
     setDisliked(true);
-    localStorage.setItem(id, JSON.stringify({like:(data&&data.like)?(+data.like)-1:0,comments:(data&&data.comments)?data.comments:null}));
+    localStorage.setItem(`${id}`, JSON.stringify({like:(data&&data.like)?(+data.like)-1:0,comments:(data&&data.comments)?data.comments:null}));
    setlike(like-1)
 
     setTimeout(() => {
       setDisliked(false);
     }, 1000);
   };
-  console.log(data);
   return (
     <div className="flex justify-center flex-row h-[calc(100%-56px)] bg-black">
       <div className="w-full max-w-[1280px] flex flex-col lg:flex-row">
@@ -97,7 +96,7 @@ const VideoDetails = () => {
                   </button>
                   <p className="text-white font-sans text-xl">{like}</p>
 
-                  <button class="bg-black text-white py-2 px-2 rounded-full"  onClick={handleDislike}>
+                  <button class="bg-black text-white py-2 px-2 rounded-full" disabled={like===0}  onClick={handleDislike}>
                   {Disliked ? <BiSolidDislike size="2rem" /> : <BiDislike size="2rem" />}
                   </button>
                 </div>

@@ -25,7 +25,7 @@ const VideoDetails = () => {
   function getcomment(id) {
     const stored = JSON.parse(localStorage.getItem(`${id}`));
     setdata(stored);
-    if(stored.like!==null){
+    if(stored && stored.like){
       setlike(stored.like);
     }
     setcomment("");
@@ -47,17 +47,20 @@ const VideoDetails = () => {
   }
   const handlelike = () => {
     setliked(true);
-    setlike(like+1)
-    localStorage.setItem(`${id}`, JSON.stringify({like:(data&&data.like)?(+data.like)+1:1,comments:(data&&data.comments)?data.comments:null}));
-
+    const updatedLike = (data && data.like ? data.like : 0) + 1;
+    localStorage.setItem(`${id}`, JSON.stringify({ like: updatedLike, comments: (data && data.comments) ? data.comments : null }));
+    setlike(updatedLike);
+    getcomment(id);
     setTimeout(() => {
       setliked(false);
     }, 1000);
   };
   const handleDislike = () => {
     setDisliked(true);
-    localStorage.setItem(`${id}`, JSON.stringify({like:(data&&data.like)?(+data.like)-1:0,comments:(data&&data.comments)?data.comments:null}));
-   setlike(like-1)
+   const updatedLike = (data && data.like ? data.like : 1) - 1;
+    localStorage.setItem(`${id}`, JSON.stringify({ like: updatedLike, comments: (data && data.comments) ? data.comments : null }));
+    setlike(updatedLike);
+    getcomment(id);
 
     setTimeout(() => {
       setDisliked(false);
